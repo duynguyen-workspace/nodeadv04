@@ -1,7 +1,21 @@
 import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PrismaClient } from '@prisma/client';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+
+class DemoDTO {
+    @ApiProperty({name: "name", type: String, default: "Abc"})
+    name: String
+
+    @ApiProperty({name: "age", type: String, default: "90"})
+    age: Number
+
+    @ApiProperty({name: "phone", type: String, default: "012345678"})
+    phone: String
+
+    @ApiProperty({name: "email", type: String, default: "abc@gmail.com"})
+    email: String
+}
 
 @ApiTags("duy")
 @Controller("app")
@@ -15,17 +29,23 @@ export class AppController {
     return "Hello 1";
   }
 
-  @ApiQuery({name: "Product Name", description: "Nhap vao ten san pham"})
-  @ApiParam({name: "Product ID"})
-  @ApiParam({name: "Order ID"})
-  @Get("demo/:product_id/:order_id")
+  @ApiQuery({name: "name", description: "Enter user's name", type: String})
+  @ApiQuery({name: "age", description: "Enter user's name", type: Number})
+  @Get('demo-query')
+  getDemoQuery(
+    @Query("name") user_name,
+    @Query("age") user_age
+  ) {
+    return {user_name, user_age}
+  }
+
+  @ApiParam({name: "product_id", type: Number})
+  @ApiParam({name: "order_id", type: Number})
+  @Get("demo-param/:product_id/:order_id")
   getDemo(
     // @Req() req, // Ctrl / Cmd + i
-    @Query("name") name, 
-    @Query("age") age, 
     @Param("product_id") product_id,
     @Param("order_id") order_id
-
   ) {
     // request: 2 loại - params, body (json)
 
@@ -38,9 +58,10 @@ export class AppController {
 
     // const { product_id, order_id } = req.params
 
-    return { name, age, product_id, order_id }
-  }
+    return { product_id, order_id }
+  } 
 
+  @ApiBody({type: DemoDTO})
   @Post("demo-body")
   getDemoBody(
     // @Req() req
@@ -48,7 +69,7 @@ export class AppController {
   ) {
     return {
       message: "Success",
-      statusCode: 201,
+      statusCode: 200,
       data: body
     }
   }

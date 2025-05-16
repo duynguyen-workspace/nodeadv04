@@ -15,10 +15,16 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
-  @Get()
+  @Get("get-all-postgres")
   findAll() {
 
     return this.productsService.findAll();
+  }
+
+  @Get("get-all-mysql")
+  findAllMysql() {
+
+    return this.productsService.findAllMysql();
   }
 
   @Get(':id')
