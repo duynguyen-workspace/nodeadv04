@@ -5,6 +5,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer'
 import { ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
+import { createTransport } from "nodemailer"
+
+const configEmail = createTransport({
+    service: "gmail",
+    auth: {
+      user: "duynguyen.workspace@gmail.com",
+      pass: "aplc yzqv yvet ykhm"
+    }
+});
+
 
 class FileUploadDto {
   // @ApiProperty({ type: 'string', format: 'binary' })
@@ -63,6 +73,19 @@ export class UsersController {
   @Post('upload-multiple')
   uploadMultiple(@UploadedFiles() files) {
     return files
+  }
+
+  @Get("send-email")
+  sendEmail() {
+    const hello = "hello"
+    let info = {
+      from: "duynguyen.workspace@gmail.com",
+      to: "duynguyen.workspace@gmail.com",
+      subject: "Nodeadv04 test mail",
+      html: `<h1 style="color: #FF0000">${hello} Kiem tra mail</h1><p>hello 12345</p>` // index.html -> css (inline CSS)
+    }
+
+    configEmail.sendMail(info, error => error)
   }
 
   @Post()

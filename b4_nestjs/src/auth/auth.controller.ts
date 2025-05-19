@@ -18,7 +18,7 @@ export class AuthController {
     // ...
 
     // B2: tạo token data cho người dùng
-    const token = this.jwtService.signAsync({data: {username: "duy123", password: "abcd1234"}}, {algorithm: 'HS256', expiresIn: "30s", secret: "BI_MAT"})
+    const token = this.jwtService.signAsync({data: {username: "duy123", password: "abcd1234"}}, {algorithm: 'HS256', expiresIn: "5m", secret: "BI_MAT"})
 
     return token
 
