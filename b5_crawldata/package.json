@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "axios": "^1.9.0",
+    "jsdom": "^26.1.0",
+    "user-agents": "^1.1.548"
+  },
+  "name": "b5_crawldata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module"
+}
