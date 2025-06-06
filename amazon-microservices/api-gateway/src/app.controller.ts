@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { catchError, lastValueFrom, of, pipe, retry, timeout } from 'rxjs';
 
 @Controller()
 export class AppController {
@@ -10,6 +11,11 @@ export class AppController {
     @Inject("NOTIFY_SERVICE") private notify_service: ClientProxy,
 
   ) {}
+
+  @Get("products/search-product")
+  search(@Query("name") name) {
+    return this.appService.search(name)
+  }
 
   @Get("products")
   getAllProducts() {
@@ -21,14 +27,28 @@ export class AppController {
     return this.appService.getProductById(product_id)
   } 
 
-  @Post("orders")
-  createOrder(@Body() payload) {
+  @Get("set-cache")
+  setCache(
+    @Query("key") key,
+    @Query("value") value
+  ) {
+    return this.appService.setCache(key, value)
+  }
 
+  @Get("get-cache")
+  getCache(
+    @Query("key") key
+  ) {
+    return this.appService.getCache(key)
+  }
+
+  @Post("order")
+  async createOrder(@Body() payload) {
     // B1: Gửi mail xác nhận order
     this.notify_service.emit("send_confirm_mail", {})
 
     // B2: tạo order
-    const orderData = this.order_service.send("create_order", payload)
+    const orderData = await lastValueFrom(this.order_service.send("create_order", payload))
 
     return orderData
   }

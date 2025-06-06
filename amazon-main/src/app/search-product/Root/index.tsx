@@ -215,7 +215,7 @@ export const handelProduct = ()=>{
 
     useEffect(() => {
         searchProductApi(search_name).then((response) => {
-            // console.log(response.data)
+            console.log(response)
 
             setListProduct(response.data)
         }).catch()

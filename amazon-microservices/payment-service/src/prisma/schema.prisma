@@ -12,7 +12,7 @@ model payment {
   order_id     Int
   method       String?   @db.VarChar(50)
   status       String?   @db.VarChar(50)
-  amount       Decimal?  @db.Decimal(10, 2)
+  amount       Int?
   payment_date DateTime? @db.DateTime(0)
 }
 
@@ -26,4 +26,13 @@ model shipping {
   email        String?   @db.VarChar(255)
   status       String?   @default("unpaid") @db.VarChar(50)
   shipped_date DateTime? @default(now()) @db.DateTime(0)
+}
+
+model products {
+  id           Int     @id @default(autoincrement())
+  name         String  @db.VarChar(255)
+  price        Decimal @db.Decimal(10, 2)
+  image        String? @db.VarChar(1000)
+  manufacturer String? @db.VarChar(255)
+  attributes   Json?
 }
