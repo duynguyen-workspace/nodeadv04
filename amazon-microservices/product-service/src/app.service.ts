@@ -13,49 +13,33 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async search(search_name) {
+  async search(searchName) {
+
+    // TH1: khi API search k dc gọi thường xuyên -> lưu cache
+    
+    // TH2: nếu search thường xuyên -> k nên lưu cache 
+
     try {
-      if (!search_name) {
+      if (!searchName) {
         const searchData = this.prisma.products.findMany()
         
         return searchData
       }
 
-      // B1: kiểm tra dữ liệu có trên cache không
-      const productData: any = await this.cacheManager.get("GET_ALL_PRODUCTS")
+      // B1: kiểm tra param searchName có trùng như data trong cache không
+      const cacheSearchName = await this.cacheManager.get("SEARCH_NAME") 
+
+      // có thể thay thế bằng mảng (~10 phần tử)
       
-      const cacheData: any = await this.cacheManager.get("SEARCH_PRODUCT")
+      if (cacheSearchName === searchName) {
+        const cacheData: any = await this.cacheManager.get("SEARCH_PRODUCT")
 
-      //! CÁCH KHẮC PHỤC CACHE
-      // C1: chứa dữ liệu chính ở 1 key, và dữ liệu search ở 1 key khác
-
-      // C2: tạo 1 cache mới nếu dữ liệu cũ không khớp
-
-      // Khi thêm 1 sản phẩm mới -> xoá cache cũ và set cache mới
-
-      // if (productData) {
-      //   // Filter danh sách sản phẩm tại productData
-
-      //   const resultData = productData.filter((product) => {
-      //     if (search_name in product.name) {
-      //       return product
-      //     }
-      //   })
-
-      //   // Kiểm tra độ dài của cacheData và resultData
-      //   if (resultData.length == cacheData.length) {
-      //     return cacheData
-      //   } else {
-      //     return resultData
-      //   }
-      
-      if (cacheData) {
         return cacheData
       } else {
         const searchData = this.prisma.products.findMany({
         where: {
           name: {
-            contains: search_name
+            contains: searchName
           }
         }
       })
@@ -63,10 +47,11 @@ export class AppService {
         // B2: set cache
         await this.cacheManager.set("SEARCH_PRODUCT", searchData)
 
+        await this.cacheManager.set("SEARCH_NAME", searchName)
+
         return searchData
       }
 
-      return 
     } catch(err) {
       console.error("500 INTERNAL ERROR!")
     }
@@ -109,3 +94,31 @@ export class AppService {
   B4: yarn prisma generate
   */
 }
+
+/* NOTE
+
+
+      //! CÁCH KHẮC PHỤC CACHE
+      // C1: chứa dữ liệu chính ở 1 key, và dữ liệu search ở 1 key khác
+
+      // C2: tạo 1 cache mới nếu dữ liệu cũ không khớp
+
+      // Khi thêm 1 sản phẩm mới -> xoá cache cũ và set cache mới
+
+      // if (productData) {
+      //   // Filter danh sách sản phẩm tại productData
+
+      //   const resultData = productData.filter((product) => {
+      //     if (search_name in product.name) {
+      //       return product
+      //     }
+      //   })
+
+      //   // Kiểm tra độ dài của cacheData và resultData
+      //   if (resultData.length == cacheData.length) {
+      //     return cacheData
+      //   } else {
+      //     return resultData
+      //   }
+
+*/

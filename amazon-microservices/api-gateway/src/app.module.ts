@@ -9,7 +9,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: "PRODUCT_SERVICE",
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: ['amqp://admin:1234@some-rabbit:5672'],
         queue: "product_queue",
         queueOptions: {
           durable: true
@@ -21,7 +21,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: "ORDER_SERVICE",
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: ['amqp://admin:1234@some-rabbit:5672'],
         queue: "order_queue",
         queueOptions: {
           durable: true
@@ -33,7 +33,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: "NOTIFY_SERVICE",
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: ['amqp://admin:1234@some-rabbit:5672'],
         queue: "notify_queue",
         queueOptions: {
           durable: true
@@ -45,7 +45,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: "SHIPPING_SERVICE",
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: ['amqp://admin:1234@some-rabbit:5672'],
         queue: "shipping_queue",
         queueOptions: {
           durable: true
@@ -57,7 +57,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       name: "PAYMENT_SERVICE",
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: ['amqp://admin:1234@some-rabbit:5672'],
         queue: "payment_queue",
         queueOptions: {
           durable: true
