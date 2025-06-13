@@ -2,12 +2,15 @@ import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { Cache } from 'cache-manager';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    @Inject("CACHE_MANAGER") private cacheManager: Cache
+    @Inject("CACHE_MANAGER") private cacheManager: Cache,
+    private elasticService: ElasticsearchService
+
   ) {}
 
   @Get()
@@ -54,5 +57,34 @@ export class AppController {
     let { product_id } = data
 
     return this.appService.getProductById(product_id)
+  }
+
+  @MessagePattern("get_elastic_products")
+  async getElasticProducts() {
+    const data = await this.elasticService.search(
+      {
+        index: "products",
+        query: {
+          match: {
+            name: 'laptop'
+          }
+        }
+      }
+    )
+
+    return data
+  }
+
+  @MessagePattern("create_elastic_product")
+  async createElasticProduct() {
+    // tự thêm id
+      return await this.elasticService.create({
+        index: "products",
+        id: "ma_1",
+        document: {
+          name: "product ABC",
+          price: 180
+        }
+      })
   }
 }

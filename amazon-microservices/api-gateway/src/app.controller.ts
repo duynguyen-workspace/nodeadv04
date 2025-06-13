@@ -9,7 +9,7 @@ export class AppController {
     private readonly appService: AppService,
     @Inject("ORDER_SERVICE") private order_service: ClientProxy,
     @Inject("NOTIFY_SERVICE") private notify_service: ClientProxy,
-
+    @Inject("PRODUCT_SERVICE") private product_service: ClientProxy,
   ) {}
 
   @Get("products/search-product")
@@ -53,10 +53,27 @@ export class AppController {
     return orderData
   }
 
+  @Get("/elastic/products")
+  async getElasticProducts() {
+    const data = await lastValueFrom(this.product_service.send("get_elastic_products", {}))
+
+    return data
+  }
+
+  @Post("/elastic/products")
+  async createElasticProducts() {
+    const data = await lastValueFrom(this.product_service.send("create_elastic_product", {}))
+
+    return data
+  }
+
+
   @Get()
   getHello(): string {
     return this.appService.getHello();
   }
+
+
 
 
 }
