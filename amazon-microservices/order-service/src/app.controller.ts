@@ -20,6 +20,10 @@ export class AppController {
   @MessagePattern('create_order')
   async createOrder(@Payload() payload) {
     try {
+      // throw Error("Create order failed")
+      console.log("order failed")
+      return {error: "ORDER_FAILED"}
+
       let { product_id, user_id } = payload;
 
       const orderResult = await this.prisma.orders.create({
